@@ -32,7 +32,6 @@
         </dependencies>
     </dependencyManagement>
 
-
     <dependencies>
         <dependency>
             <groupId>io.cucumber</groupId>
@@ -51,69 +50,12 @@
             <artifactId>junit-platform-suite</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId> org.apache.cassandra</groupId>
-            <artifactId>cassandra-all</artifactId>
-            <version>0.8.1</version>
 
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-log4j12</artifactId>
-                </exclusion>
-                <exclusion>
-                    <groupId>log4j</groupId>
-                    <artifactId>log4j</artifactId>
-                </exclusion>
-            </exclusions>
-
-        </dependency>
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.jupiter</groupId>
-            <artifactId>junit-jupiter-api</artifactId>
-            <version>5.8.1</version> <!-- Use the appropriate version -->
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.junit.platform</groupId>
-            <artifactId>junit-platform-suite-api</artifactId>
-            <version>1.10.2</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.seleniumhq.selenium</groupId>
-            <artifactId>selenium-java</artifactId>
-            <version>4.1.1</version>
-        </dependency>
-
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-java</artifactId>
-            <version>7.15.0</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>io.cucumber</groupId>
-            <artifactId>cucumber-junit-platform-engine</artifactId>
-            <version>7.13.0</version> <!-- Use the appropriate version -->
-            <scope>test</scope>
-        </dependency>
-
-
 
     </dependencies>
 
