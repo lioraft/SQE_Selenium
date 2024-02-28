@@ -75,20 +75,16 @@ public class StepDefinitions {
         // find the search button and click it
         WebElement searchButton = UserDriver.findElement(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@class='col-md-5']/div[@id='search']/button[@class='btn btn-light btn-lg']/i[@class='fa-solid fa-magnifying-glass']"));
         searchButton.click();
+        // wait for search results to load
+        UserWait.until(ExpectedConditions.presenceOfElementLocated(By.xpath("//div[@id='product-list']/div[@class='col mb-3'][1]")));
         // find add to cart button and scroll to it
-        WebElement addToCartButton = UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/main/div[@id='product-search']/div[@class='row']/div[@id='content']/div[@id='product-list']/div[@class='col mb-3'][1]/div[@class='product-thumb']/div[@class='content']/form/div[@class='button-group']/button[1]")));
+        WebElement addToCartButton = UserDriver.findElement(By.xpath("/html/body/main/div[@id='product-search']/div[@class='row']/div[@id='content']/div[@id='product-list']/div[@class='col mb-3'][1]/div[@class='product-thumb']/div[@class='content']/form/div[@class='button-group']/button[1]"));
         // scroll to the element
         ((JavascriptExecutor) UserDriver).executeScript("arguments[0].scrollIntoView(true);", addToCartButton);
-        // wait till the page loads and find the product add to cart button
-        addToCartButton = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/main/div[@id='product-search']/div[@class='row']/div[@id='content']/div[@id='product-list']/div[@class='col mb-3'][1]/div[@class='product-thumb']/div[@class='content']/form/div[@class='button-group']/button[1]")));
-        // Click on the element
-        addToCartButton.click();
-        // wait a few seconds for the page to load
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+        // wait until the element is clickable
+        UserWait.until(ExpectedConditions.elementToBeClickable(addToCartButton));
+        // click on the element using JavaScript executor to ensure it's clicked
+        ((JavascriptExecutor) UserDriver).executeScript("arguments[0].click();", addToCartButton);
     }
 
     // check that product was added to the cart
@@ -96,6 +92,8 @@ public class StepDefinitions {
     public void productInCart(String product) {
         // scroll back to the top of the page
         ((JavascriptExecutor) UserDriver).executeScript("window.scrollTo(0, 0)");
+        // wait till success message is visible
+        UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='alert']/div[@class='alert alert-success alert-dismissible']")));
         // wait till the page loads and find the cart button and click it
         WebElement cartButton = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
         cartButton.click();
@@ -235,29 +233,39 @@ public class StepDefinitions {
         assert(priceField.getAttribute("value").equals(price));
     }
 
-    /*
-    TO FIX
-    // after all scenarios are done
+    // after scenario is done
     @After
     public void tearDown() {
-        // remove the products from the cart of user driver
-        WebElement cartInformation = UserDriver.findElement(By.xpath("//*[@id='header-cart']/div[1]/button[1]"));
-        cartInformation.click();
-        WebElement removeButton = UserDriver.findElement(By.xpath("//*[@id='header-cart']/div/ul/li/table/tbody/tr/td/form/button/i[1]"));
-        removeButton.click();
-        // change the price back to the original price on admin's driver
-        WebElement priceField = AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-price']")));
-        priceField.clear();
-        priceField.sendKeys(String.valueOf(oldPrice));
-        AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='page-header']/div[@class='container-fluid']/div[@class='float-end']/button[@class='btn btn-primary']"))).click();
-        try {
-            Thread.sleep(2000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        // if user driver is not null
+        if (UserDriver != null) {
+            // remove the products from the cart of user driver
+            WebElement cartInformation = UserDriver.findElement(By.xpath("//*[@id='header-cart']/div[1]/button[1]"));
+            cartInformation.click();
+            WebElement removeButton = UserDriver.findElement(By.xpath("//*[@id='header-cart']/div/ul/li/table/tbody/tr/td/form/button/i[1]"));
+            removeButton.click();
+            // wait a few seconds for the page to finish
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            // close the browser
+            UserDriver.quit();
         }
-        // close the browsers
-        UserDriver.quit();
-        AdminDriver.quit();
+        // if admin driver is not null
+        if (AdminDriver != null) {
+            // change the price back to the original price on admin's driver
+            WebElement priceField = AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-price']")));
+            priceField.clear();
+            priceField.sendKeys(String.valueOf(oldPrice));
+            AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='page-header']/div[@class='container-fluid']/div[@class='float-end']/button[@class='btn btn-primary']"))).click();
+            // wait a few seconds for the page to finish
+            try {
+                Thread.sleep(2000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            AdminDriver.quit();
+        }
     }
-     */
 }
