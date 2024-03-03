@@ -6,10 +6,7 @@ import io.cucumber.java.en.*;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions.*;
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.Point;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
@@ -18,7 +15,7 @@ import java.time.Duration;
 
 public class StepDefinitions {
     // save old price for the second scenario
-    private int oldPrice;
+    private float oldPrice;
     // chrome driver for the admin and user
     private ChromeDriver UserDriver;
     private ChromeDriver AdminDriver;
@@ -41,8 +38,9 @@ public class StepDefinitions {
         UserDriver.get("http://localhost/opencart/");
         // set the window position
         UserDriver.manage().window().setPosition(new Point(5, 5));
-        // set the window size to full screen
-        UserDriver.manage().window().maximize();
+        // Set window size to 1000x1000
+        Dimension dimension = new Dimension(1000, 1000);
+        UserDriver.manage().window().setSize(dimension);
     }
 
     // user logs in with the given email and password
@@ -90,12 +88,16 @@ public class StepDefinitions {
     // check that product was added to the cart
     @Then("{string} successfully added to the cart")
     public void productInCart(String product) {
+        // find the success message
+        WebElement successMessage = UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='alert']/div[@class='alert alert-success alert-dismissible']/button[@class='btn-close']")));
+        // click it
+        successMessage.click();
         // scroll back to the top of the page
         ((JavascriptExecutor) UserDriver).executeScript("window.scrollTo(0, 0)");
-        // wait till success message is visible
-        UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='alert']/div[@class='alert alert-success alert-dismissible']")));
         // wait till the page loads and find the cart button and click it
         WebElement cartButton = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
+        // wait for cart button to be clickable
+        UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
         cartButton.click();
         // wait for cart to load and find the product name
         WebElement productName = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/ul[@class='dropdown-menu dropdown-menu-end p-2 show']/li/table[@class='table table-striped mb-2']/tbody/tr/td[@class='text-start']/a")));
@@ -133,8 +135,9 @@ public class StepDefinitions {
         AdminDriver.get("http://localhost/opencart/adminn/index.php?route=common/login");
         // set the window position
         AdminDriver.manage().window().setPosition(new Point(5, 5));
-        // set the window size to full screen
-        AdminDriver.manage().window().maximize();
+        // Set window size to 1000x1000
+        Dimension dimension = new Dimension(1000, 1000);
+        AdminDriver.manage().window().setSize(dimension);
     }
 
     // user logs in with the given email and password
@@ -158,6 +161,9 @@ public class StepDefinitions {
     // admin navigates to the catalog page
     @And("Admin navigates to Catalog")
     public void adminOnCatalog() {
+        // find sidebar button and click it
+        WebElement sidebarButton = AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/header[@id='header']/div[@class='container-fluid']/button[@id='button-menu']/i[@class='fa-solid fa-bars']")));
+        sidebarButton.click();
         // find the catalog button and click it
         WebElement catalogButton = AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/nav[@id='column-left']/ul[@id='menu']/li[@id='menu-catalog']/a[@class='parent collapsed']")));
         catalogButton.click();
@@ -175,17 +181,34 @@ public class StepDefinitions {
     // admin navigates to the product
     @And("Admin clicks on Edit of a specific {string}")
     public void adminEditsProduct(String product) {
+        // find filter icon and click it
+        WebElement filterIcon = AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='page-header']/div[@class='container-fluid']/div[@class='float-end']/button[@class='btn btn-light d-lg-none']")));
+        filterIcon.click();
         // wait for filter sidebar to be visible, and then send the product name to the matching field
         AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-name']"))).sendKeys(product);
-        // find the filter button and click it
-        AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("//*[@id='button-filter']"))).click();
+        // scroll into view of "sales" which is a little below filter button
+        WebElement filterButton = AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@id='filter-product']/div[@class='card']/div[@class='card-body']/div[@class='text-end']/button[@id='button-filter']")));
+        // scroll to the filter button
+        ((JavascriptExecutor) AdminDriver).executeScript("arguments[0].scrollIntoView(true);", filterButton);
+        // wait for it to be visible
+        AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@id='filter-product']/div[@class='card']/div[@class='card-body']/div[@class='text-end']/button[@id='button-filter']")));
+        // find the filter button wait for it to be clickable and click it
+        AdminWait.until(ExpectedConditions.elementToBeClickable(filterButton)).click();
         // wait a few seconds for the page to load
         try {
             Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        // wait for the product to be visible and click on the edit button
+        // Execute JavaScript to scroll to the bottom of the page
+        ((JavascriptExecutor) AdminDriver).executeScript("window.scrollTo(0, document.body.scrollHeight)");
+        // wait a few seconds for the page to load
+        try {
+            Thread.sleep(1500);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@class='col col-lg-9 col-md-12']/div[@class='card']/div[@id='product']/form[@id='form-product']/div[@class='table-responsive']/table[@class='table table-bordered table-hover']/tbody/tr/td[@class='text-end'][3]/div[@class='btn-group']/a[@class='btn btn-primary']")));
         AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@class='col col-lg-9 col-md-12']/div[@class='card']/div[@id='product']/form[@id='form-product']/div[@class='table-responsive']/table[@class='table table-bordered table-hover']/tbody/tr/td[@class='text-end'][3]/div[@class='btn-group']/a[@class='btn btn-primary']"))).click();
     }
 
@@ -201,11 +224,14 @@ public class StepDefinitions {
     // scroll to reach price field and change it
     @And("Admin changes the price to {string}")
     public void adminChangesPrice(String price) {
+        // scroll to the middle of the page
+        ((JavascriptExecutor) AdminDriver).executeScript("window.scrollTo(0, document.body.scrollHeight/2)");
         // scroll until the price field is visible
         WebElement priceField = AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-price']")));
-        ((JavascriptExecutor) AdminDriver).executeScript("arguments[0].scrollIntoView(true);", priceField);
-        // save the old price
-        oldPrice = Integer.parseInt(priceField.getAttribute("value"));
+        // wait for the price field to be visible
+        AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-price']")));
+        // save the old price (float)
+        oldPrice = Float.parseFloat(priceField.getAttribute("value"));
         // clear the price field
         priceField.clear();
         // fill the price field with the new price
@@ -254,11 +280,22 @@ public class StepDefinitions {
         }
         // if admin driver is not null
         if (AdminDriver != null) {
-            // change the price back to the original price on admin's driver
+            // scroll to the middle of the page
+            ((JavascriptExecutor) AdminDriver).executeScript("window.scrollTo(0, document.body.scrollHeight/2)");
+            // scroll until the price field is visible
             WebElement priceField = AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-price']")));
+            // wait for the price field to be visible
+            AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//*[@id='input-price']")));
+            // clear the price field
             priceField.clear();
-            priceField.sendKeys(String.valueOf(oldPrice));
-            AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='page-header']/div[@class='container-fluid']/div[@class='float-end']/button[@class='btn btn-primary']"))).click();
+            // fill the price field with the new price
+            priceField.sendKeys(oldPrice + "");
+            // wait for alert message to be visible and click it
+            AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='alert']/div[@class='alert alert-success alert-dismissible']/button[@class='btn-close']"))).click();
+            // scroll back up to the top of the page
+            ((JavascriptExecutor) AdminDriver).executeScript("window.scrollTo(0, 0)");
+            // find the save button and click it
+            AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='page-header']/div[@class='container-fluid']/div[@class='float-end']/button[@class='btn btn-primary']"))).click();
             // wait a few seconds for the page to finish
             try {
                 Thread.sleep(2000);
