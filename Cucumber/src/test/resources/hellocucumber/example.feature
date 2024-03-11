@@ -12,18 +12,18 @@ Feature: A set of scenarios for testing the "User checks out a product; Admin ch
       | lioraftabi@gmail.com  | 12345678  | iPhone  |
 
 
-#  Scenario Outline: Testing a case where admin changes a product's price
-#    Given Admin is on Admin Dashboard Page
-#    When Admin is logged in with "<UserName>" and "<Password>"
-#    And Admin navigates to Catalog
-#    And Admin clicks on Products
-#    And Admin clicks on Edit of a specific "<Product>"
-#    And Admin navigates to Data tab
-#    And Admin changes the price to "<Price>"
-#    And Admin clicks on Save
-#    Then Price successfully changed to "<Price>"
-#
-#    Examples:
-#      | UserName | Password | Product | Price |
-#      | admin    | 1234     | iMac    | 5700  |
-#      | admin    | 1234     | iPhone  | 1000  |
+  Scenario Outline: Testing a case where admin changes a product's price
+    Given Admin is on Admin Dashboard Page
+    When Admin is logged in with "<UserName>" and "<Password>"
+    And Admin navigates to Catalog
+    And Admin clicks on Products
+    And Admin clicks on Edit of a specific "<Product>"
+    And Admin navigates to Data tab
+    And Admin changes the price to "<Price>"
+    And Admin clicks on Save
+    Then Price successfully changed to "<Price>"
+
+    Examples:
+      | UserName | Password | Product | Price |
+      | admin    | 1234     | iMac    | 5700  |
+      | admin    | 1234     | iPhone  | 1000  |

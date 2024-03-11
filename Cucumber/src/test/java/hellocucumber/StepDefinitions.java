@@ -88,20 +88,29 @@ public class StepDefinitions {
     // check that product was added to the cart
     @Then("{string} successfully added to the cart")
     public void productInCart(String product) {
-        // find the success message
-        WebElement successMessage = UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='alert']/div[@class='alert alert-success alert-dismissible']/button[@class='btn-close']")));
-        // click it
-        successMessage.click();
-        // scroll back to the top of the page
+        // Wait for success message to be visible
+        WebElement successMessage = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='alert']/div[@class='alert alert-success alert-dismissible']")));
+
+        // Click close button on success message
+        WebElement closeButton = UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='alert']/div[@class='alert alert-success alert-dismissible']/button[@class='btn-close']")));
+        closeButton.click();
+
+        // Scroll to the top of the page
         ((JavascriptExecutor) UserDriver).executeScript("window.scrollTo(0, 0)");
-        // wait till the page loads and find the cart button and click it
-        WebElement cartButton = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
-        // wait for cart button to be clickable
-        UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
-        cartButton.click();
-        // wait for cart to load and find the product name
-        WebElement productName = UserWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/ul[@class='dropdown-menu dropdown-menu-end p-2 show']/li/table[@class='table table-striped mb-2']/tbody/tr/td[@class='text-start']/a")));
-        // check that the product name is the same as the given product
+
+        // Click on the cart button - attempt scrolling if the button is not yet clickable
+        try {
+            WebElement cartButton = UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
+            cartButton.click();
+        } catch (WebDriverException e) {
+            // If clicking fails due to element not clickable, attempt scrolling and retry clicking
+            ((JavascriptExecutor) UserDriver).executeScript("window.scrollTo(0, 0)");
+            WebElement cartButton = UserWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/button[@class='btn btn-lg btn-inverse btn-block dropdown-toggle']")));
+            cartButton.click();
+        }
+
+        // Assert that the product is added to the cart
+        WebElement productName = UserDriver.findElement(By.xpath("/html/body/header/div[@class='container']/div[@class='row']/div[@id='header-cart']/div[@class='dropdown d-grid']/ul[@class='dropdown-menu dropdown-menu-end p-2 show']/li/table[@class='table table-striped mb-2']/tbody/tr/td[@class='text-start']/a"));
         assert(productName.getText().equals(product));
     }
 
