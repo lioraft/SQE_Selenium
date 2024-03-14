@@ -24,14 +24,12 @@ provengo analyze -f pdf openCart
 provengo run --show-sessions openCart
 ```
 6. We repeated steps 4-5 until we were satisfied with the result.
-7. We recorded a video of the running tests and added it to the report. Since more than one browser session was opened, we recorded the entire screen. The link for the video is [here]($$*TODO* write the link$$).
+7. We recorded a video of the running tests and added it to the report. Since more than one browser session was opened, we recorded the entire screen. The link for the video is (submission-files/provengo_video.mp4).
 8. We copied the generated graph of the model to a file named [model.pdf](submission-files/model.pdf) inside the submission-files directory.
 
 ### Test files
 The test data is in [data.js](openCart/data/data.js), the set of possible actions is in [actions.js](openCart/spec/js/actions.js), and the behavior of the system is in [behavior.js](openCart/spec/js/behavior.js).
 See the files for a detailed description.
-
-$$*TODO*: Make sure that the text inside the files is informative, self-explanatory, and properly written (meaningful variable names, no magic number, etc.). Specifically, write for each bthread a comment that explain what it does and make sure that the bthread's name reflects its purpose. See the file for an example.$$
 
 ## How we tested the system
 See the last two lessons of the [Provengo Course](https://provengo.github.io/Course/Online%20Course/0.9.5/index.html) for a detailed explanation of the following steps.

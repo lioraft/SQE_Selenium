@@ -1,80 +1,142 @@
-function userLogIn(session) {
-  with(session) {
+// @provengo summon ctrl
+
+function userLogIn(s) {
+  sync({request: Event('Start(UserLogIn)')})
+  with (s) {
     // login
-    click(s, xpathsUser.HomePage.myAccountButton)
-    click(s, xpathsUser.HomePage.loginButton)
+    click(xpathsUser.HomePage.myAccountButton)
+    click(xpathsUser.HomePage.loginButton)
     // enter email and password in inputs
-    writeText(s, xpathsUser.LoginPage.emailInput, userEmail)
-    writeText(s, xpathsUser.LoginPage.passwordInput, userPassword)
+    writeText(xpathsUser.LoginPage.emailInput, userEmail)
+    writeText(xpathsUser.LoginPage.passwordInput, userPassword)
+    // scroll down
+    runCode(scrolling.down)
     // click login button
-    click(s, xpathsUser.LoginPage.loginButton)
+    click(xpathsUser.LoginPage.loginButton)
   }
+  sync({
+    request: Event("End(UserLogIn)"),
+    request: Ctrl.markEvent('End(UserLogIn)')
+  })
 }
 
-function userSearchProduct(session) {
-  with(session) {
+function userSearchProduct(s) {
+  sync({ request: Event("Start(UserSearchProduct)"),
+  waitFor: Event("End(UserLogIn)")})
+  with(s) {
     // search for product
-    writeText(s, xpathsUser.ProductPage.searchInput, product)
-    click(s, xpathsUser.ProductPage.searchButton)
+    writeText(xpathsUser.ProductPage.searchInput, product)
+    click(xpathsUser.ProductPage.searchButton)
   }
+  sync({ request: Event("End(UserSearchProduct)"),
+  request: Ctrl.markEvent('End(UserSearchProduct)')})
 }
 
-function userAddToCart(session) {
-  with(session) {
+function userAddToCart(s) {
+  sync({ request: Event("Start(UserAddToCart)"),
+  block: Event("Start(AdminEditsProductsPrice)"),
+  waitFor: Event("End(UserSearchProduct)")})
+  with(s) {
+    // scroll down
+    runCode(scrolling.down)
+    // wait for clickables to appear
+    waitForClickability(xpathsUser.ProductPage.addToCartButton)
     // add product to cart
-    click(s, xpathsUser.ProductPage.addToCartButton)
-  }
-}
-
-function userNavigatesToCheckout(session) {
-  with (session) {
+    click(xpathsUser.ProductPage.addToCartButton)
+    // wait for success message
+    waitForVisibility(xpathsUser.ProductPage.addedToCartMessage)
     // close success message
-    click(s, xpathsUser.ProductPage.successMessageCloseButton)
+    click(xpathsUser.ProductPage.successMessageCloseButton)
+  }
+  sync({ request: Event("End(UserAddToCart)"),
+  request: Ctrl.markEvent('End(UserAddToCart)')})
+}
+
+function userNavigatesToCheckout(s) {
+  sync({ request: Event("Start(UserNavigatesToCheckout)"),
+  waitFor: Event("End(UserAddToCart)")})
+  with (s) {
+    // scroll up
+    runCode(scrolling.up)
+    // wait for items in cart button to appear
+    waitForVisibility(xpathsUser.ProductPage.itemsInCartButton)
+    // wait for clickable to appear
+    waitForClickability(xpathsUser.ProductPage.itemsInCartButton)
     // navigate to checkout
-    click(s, xpathsUser.ProductPage.itemsInCartButton)
-    click(s, xpathsUser.ProductPage.checkoutButton)
+    click(xpathsUser.ProductPage.itemsInCartButton)
+    click(xpathsUser.ProductPage.checkoutButton)
   }
+  sync({ request: Event("End(UserNavigatesToCheckout)"),
+  allow: Event("Start(AdminEditsProductsPrice)"),
+  request: Ctrl.markEvent('End(UserNavigatesToCheckout)')})
 }
-function adminLogsIn(session) {
-  with(session) {
+function adminLogsIn(s) {
+  sync({ request: Event("Start(AdminLogsIn)")})
+  with(s) {
     // login
-    writeText(s, xpathsAdmin.LoginPage.usernameInput, adminUserName)
-    writeText(s, xpathsAdmin.LoginPage.passwordInput, adminPassword)
-    click(s, xpathsAdmin.LoginPage.loginButton)
+    writeText(xpathsAdmin.LoginPage.usernameInput, adminUserName)
+    writeText(xpathsAdmin.LoginPage.passwordInput, adminPassword)
+    click(xpathsAdmin.LoginPage.loginButton)
   }
+  sync({ request: Event("End(AdminLogsIn)"),
+  request: Ctrl.markEvent('End(AdminLogsIn)')})
 }
 
-function adminNavigatesToProductsPage(session) {
-  with(session) {
-    // navigate to products page
-    click(s, xpathsAdmin.Dashboard.sidebarButton)
-    click(s, xpathsAdmin.Dashboard.catalogButton)
-    click(s, xpathsAdmin.Dashboard.productsButton)
+function adminNavigatesToProductsPage(s) {
+  sync({ request: Event("Start(AdminNavigatesToProductsPage)"),
+  waitFor: Event("End(AdminLogsIn)")})
+  with(s) {
+    // // wait for dashboard to load
+    waitForVisibility(xpathsAdmin.Dashboard.catalogButton)
+    click(xpathsAdmin.Dashboard.catalogButton)
+    click(xpathsAdmin.Dashboard.productsButton)
   }
+  sync({ request: Event("End(AdminNavigatesToProductsPage)"),
+  request: Ctrl.markEvent('End(AdminNavigatesToProductsPage)')})
 }
 
-function adminFiltersProduct(session) {
-  with(session) {
+function adminFiltersProduct(s) {
+  sync({ request: Event("Start(AdminFiltersProduct)"),
+  waitFor: Event("End(AdminNavigatesToProductsPage)")})
+  with(s) {
+    // wait for input to appear
+    waitForVisibility(xpathsAdmin.Dashboard.productNameInput)
     // filter product
-    click(s, xpathsAdmin.Dashboard.filterIcon)
-    click(s, xpathsAdmin.Dashboard.filterButton)
-    writeText(s, xpathsAdmin.Dashboard.productNameInput, product)
-    click(s, xpathsAdmin.Dashboard.filterButton)
+    writeText(xpathsAdmin.Dashboard.productNameInput, product)
+    // scroll down
+    runCode(scrolling.down)
+    // wait for filter button to appear
+    waitForClickability(xpathsAdmin.Dashboard.filterButton)
+    // click filter button
+    click(xpathsAdmin.Dashboard.filterButton)
   }
+  sync({ request: Event("End(AdminFiltersProduct)"),
+  request: Ctrl.markEvent('End(AdminFiltersProduct)')})
 }
 
-function adminEditsProductsPrice(session) {
-  with(session) {
+function adminEditsProductsPrice(s) {
+  // when admin edits product price, user should not be able to add it to cart
+  sync({ request: Event("Start(AdminEditsProductsPrice)"),
+  block: Event("Start(UserAddToCart)"),
+  waitFor: Event("End(AdminFiltersProduct)")})
+  with(s) {
     // edit product
-    click(s, xpathsAdmin.Dashboard.editProductButton)
+    click(xpathsAdmin.Dashboard.editProductButton)
+    // wait for data tab to appear
+    waitForVisibility(xpathsAdmin.Dashboard.dataOfProductButton)
     // navigate to data tab
-    click(s, xpathsAdmin.Dashboard.dataOfProductButton)
+    click(xpathsAdmin.Dashboard.dataOfProductButton)
     // edit price
-    writeText(s, xpathsAdmin.ProductPage.priceInput, productPrice)
+    writeText(xpathsAdmin.ProductPage.priceInput, productPrice)
+    // scroll up
+    runCode(scrolling.up)
+    // wait for save button to appear
+    waitForClickability(xpathsAdmin.ProductPage.saveButton)
     // save
-    click(s, xpathsAdmin.ProductPage.saveButton)
-    // change flag
-    isPriceChanged = true
+    click(xpathsAdmin.ProductPage.saveButton)
   }
+  sync({ request: Event("End(AdminEditsProductsPrice)"),
+  allow: Event("End(UserAddToCart)") ,
+  request: Ctrl.markEvent('End(AdminEditsProductsPrice)')})
 }
 

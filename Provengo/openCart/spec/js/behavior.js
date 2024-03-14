@@ -1,36 +1,33 @@
-/* @provengo summon selenium */
+//@provengo summon selenium
 
 /**
- * This story opens a new browser window, goes to openCart.com, and logs in as a user.
+ * User scenario: user logs in, searches for a product, adds it to cart, and navigates to checkout.
  */
-bthread('UserScenario', function () {
+bthread('User Scenario', function () {
   // start session
-  let s = new SeleniumSession('user').start(userURL)
+  let s1 = new SeleniumSession(USERSESSION).start(userURL)
   // log in
-  userLogIn(s)
+  userLogIn(s1)
   // search for product
-  userSearchProduct(s)
-  // interrupt if admin changes price
-  interrupt(Event("Admin changed the price of the product. Operation interrupted."),function () :void {
-    // add product to cart
-    userAddToCart(s)
-    // navigate to checkout
-    userNavigatesToCheckout(s)
-  })
+  userSearchProduct(s1)
+  // add product to cart
+  userAddToCart(s1)
+  // navigate to checkout
+  userNavigatesToCheckout(s1)
 })
 
 /**
- * This story opens a new browser window, goes to google.com, and searches for "Pasta" using the "I Feel Lucky" feature.
+ * Admin scenario: admin logs in, navigates to products page, filters product, and edits product price.
  */
 bthread('AdminScenario', function () {
   // start session
-  let s = new SeleniumSession('admin').start(URL)
+  let s2 = new SeleniumSession(ADMINSESSION).start(adminURL)
   // log in
-  adminLogsIn(s)
+  adminLogsIn(s2)
   // navigate to products page
-  adminNavigatesToProductsPage(s)
+  adminNavigatesToProductsPage(s2)
   // filter product
-  adminFiltersProduct(s)
+  adminFiltersProduct(s2)
   // edit product
-  adminEditsProductsPrice(s)
+  adminEditsProductsPrice(s2)
 })

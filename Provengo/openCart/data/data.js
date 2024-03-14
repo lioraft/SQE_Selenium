@@ -1,6 +1,9 @@
 // urls
-const userURL = 'http://localhost/opencart/';
-const adminURL = 'http://localhost/opencart/adminn/index.php?route=common/login';
+const userURL = 'http://localhost/opencart/'
+const adminURL = 'http://localhost/opencart/adminn/index.php?route=common/login'
+
+const USERSESSION='USSES'
+const ADMINSESSION='ADSES'
 
 // xpaths
 const xpathsUser = {
@@ -39,7 +42,6 @@ const xpathsAdmin = {
     sidebarButton: "/html/body/div[@id='container']/header[@id='header']/div[@class='container-fluid']/button[@id='button-menu']/i[@class='fa-solid fa-bars']",
     catalogButton: "/html/body/div[@id='container']/nav[@id='column-left']/ul[@id='menu']/li[@id='menu-catalog']/a[@class='parent collapsed']",
     productsButton: "/html/body/div[@id='container']/nav[@id='column-left']/ul[@id='menu']/li[@id='menu-catalog']/ul[@id='collapse-1']/li[2]/a",
-    filterIcon: "/html/body/div[@id='container']/div[@id='content']/div[@class='page-header']/div[@class='container-fluid']/div[@class='float-end']/button[@class='btn btn-light d-lg-none']",
     filterButton: "//*[@id='button-filter']",
     productNameInput: "//*[@id='input-name']",
     editProductButton: "/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@class='col col-lg-9 col-md-12']/div[@class='card']/div[@id='product']/form[@id='form-product']/div[@class='table-responsive']/table[@class='table table-bordered table-hover']/tbody/tr/td[@class='text-end'][3]/div[@class='btn-group']/a[@class='btn btn-primary']",
@@ -52,6 +54,11 @@ const xpathsAdmin = {
   }
 }
 
+const scrolling = {
+  down: "window.scrollTo(0, document.body.scrollHeight)",
+  up: "window.scrollTo(0, 0)"
+}
+
 // user constants
 const userEmail = 'lioraftabi@gmail.com'
 const userPassword = '12345678'
@@ -61,5 +68,3 @@ const product = 'MacBook'
 const adminUserName = 'admin'
 const adminPassword = '1234'
 const productPrice = '6000'
-// flag of changing price
-let isPriceChanged = false;
