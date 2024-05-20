@@ -1,4 +1,4 @@
-Feature: A set of scenarios for testing the "User checks out a product; Admin changes the products price" module
+Feature: A set of scenarios for testing the user stories: checking out a product and changing a product's price
 
   Scenario Outline: Testing a case where user checks out a product
     Given User is on Home Page

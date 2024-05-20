@@ -217,6 +217,7 @@ public class StepDefinitions {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        // find the edit button and click it
         AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@class='col col-lg-9 col-md-12']/div[@class='card']/div[@id='product']/form[@id='form-product']/div[@class='table-responsive']/table[@class='table table-bordered table-hover']/tbody/tr/td[@class='text-end'][3]/div[@class='btn-group']/a[@class='btn btn-primary']")));
         AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='row']/div[@class='col col-lg-9 col-md-12']/div[@class='card']/div[@id='product']/form[@id='form-product']/div[@class='table-responsive']/table[@class='table table-bordered table-hover']/tbody/tr/td[@class='text-end'][3]/div[@class='btn-group']/a[@class='btn btn-primary']"))).click();
     }
@@ -226,7 +227,7 @@ public class StepDefinitions {
     public void adminClicksData() {
         // wait for the data tab to be visible and click it
         AdminWait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='card']/div[@class='card-body']/form[@id='form-product']/ul[@class='nav nav-tabs']/li[@class='nav-item'][2]/a[@class='nav-link']")));
-        // find the filter button and click it
+        // find the data button and click it
         AdminWait.until(ExpectedConditions.elementToBeClickable(By.xpath("/html/body/div[@id='container']/div[@id='content']/div[@class='container-fluid']/div[@class='card']/div[@class='card-body']/form[@id='form-product']/ul[@class='nav nav-tabs']/li[@class='nav-item'][2]/a[@class='nav-link']"))).click();
     }
 
