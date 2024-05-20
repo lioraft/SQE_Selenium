@@ -38,21 +38,3 @@ We tested the OpenCart that allows for adding and checks out products. We chose 
       1. Navigate to the product management section.
       2. Locate the product and update its price.
    - *Expected outcome:* The product's price is successfully updated, and the changes reflect across the system.
-## How we tested
-We used two different testing methods:
-1. [Cucumber](https://cucumber.io/), a behavior-driven testing framework.
-2. [Provengo](https://provengo.tech/), a story-based testing framework.
-
-Each of the testing methods is elaborated in its own directory.
-
-## Results
-Update all README.md files (except for d-e, see Section 1). Specifically, replace all $$TODO…$$ according to the instructions inside the$$.
-
-## Detected Bugs
-We detected the following bugs:
-
-1. Bug 1:
-    1. General description: Whenever graph is too big, it doesn't fit in the PDF.
-    2. Steps to reproduce: ./provengo analyze -f pdf openCart
-    3. Expected result: pdf file with the graph
-    4. Actual result: pdf file with the graph, but the graph is too big and doesn't fit in the page so it's cut off.
